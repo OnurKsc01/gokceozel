@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Çoklu Yılbaşı Kartı</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="gokce.jpg">
+    <style>
+
+    .title-icon {
+    width: 40px;       /* Genişlik: İsteğinize göre artırıp azaltabilirsiniz */
+    height: 40px;      /* Yükseklik: Genişlikle aynı yaparsanız kare olur */
+    object-fit: cover; /* Resim kutuya sığmazsa bozulmadan kesilsin */
+    border-radius: 50%;/* İsteğe bağlı: Resmi yuvarlak yapar. İstemezseniz bu satırı silin. */
+    vertical-align: middle; /* Resmi yazının ortasına hizalar */
+    margin: 0 5px;     /* Yanlarındaki yazı/emojilerden biraz boşluk bırakır */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2); /* Hafif bir gölge efekti */
+}        
+
+
+.back-btn {
+    /* Pozisyonu serbest bıraktık, artık yazının en tepesinde duracak */
+    position: relative; 
+    display: inline-block;
+    
+    /* Görünüm ayarları (Kağıda uygun kırmızı tonları) */
+    margin-bottom: 10px; /* Başlıkla arasında boşluk */
+    background: transparent;
+    color: #b71c1c; /* Koyu kırmızı yazı */
+    border: 1px solid #b71c1c; /* İnce kırmızı çerçeve */
+    padding: 5px 15px;
+    border-radius: 15px;
+    
+    font-family: 'Quicksand', sans-serif;
+    font-size: 0.8rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 10;
+}
+
+.back-btn:hover {
+    background: #b71c1c;
+    color: white; /* Üzerine gelince içi dolsun */
+}
+
+.back-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateX(-3px); /* Üzerine gelince hafif sola kayar */
+}
+
+        :root {
+            --envelope-color: #c62828;
+            --envelope-shadow: #8e0000;
+            --letter-color: #fffcf2;
+            --bg-color: #0f172a;
+            --gold: #ffd700;
+            --text-color: #b71c1c;
+        }
+        body {
+            margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh;
+            background-color: var(--bg-color);
+            background-image: radial-gradient(white, rgba(255,255,255,.2) 2px, transparent 5px), radial-gradient(white, rgba(255,255,255,.15) 1px, transparent 4px), radial-gradient(white, rgba(255,255,255,.1) 2px, transparent 5px);
+            background-size: 550px 550px, 350px 350px, 250px 250px;
+            font-family: 'Quicksand', sans-serif; overflow: hidden; color: white; position: relative;
+        }
+
+        .shooting-star {
+            position: absolute;
+            --angle: 45deg; 
+            --dx: 500px;
+            --dy: 500px;
+            
+            transform: rotate(var(--angle));
+            
+            height: 2px;
+            background: linear-gradient(to right, rgba(255,255,255,0), rgba(255,255,255,1) 50%, rgba(255,255,255,1));
+            border-radius: 999px;
+            filter: drop-shadow(0 0 6px rgba(255,255,255,0.5));
+            animation: shooting 3s ease-in-out forwards;
+            pointer-events: none; z-index: -1; opacity: 0;
+            width: 0; 
+            transform-origin: left center;
+        }
+
+        .shooting-star::before {
+            content: ''; position: absolute;
+            top: calc(50% - 2px);
+            right: 0;
+            height: 4px; width: 4px;
+            background: #fff; border-radius: 100%;
+            box-shadow: 0 0 10px 2px rgba(255,255,255,0.8);
+        }
+
+        @keyframes shooting {
+            0% {
+                transform: translateX(0) translateY(0) rotate(var(--angle));
+                opacity: 1; width: 0;
+            }
+            20% {
+                width: 200px; opacity: 1;
+            }
+            100% {
+                transform: translateX(var(--dx)) translateY(var(--dy)) rotate(var(--angle));
+                opacity: 0; width: 0; 
+            }
+        }
+
+        #selection-screen { text-align: center; z-index: 100; transition: opacity 0.5s ease; padding: 20px; }
+        .title { font-size: 2.5rem; margin-bottom: 30px; text-shadow: 0 0 10px rgba(255,215,0,0.5); font-family: 'Dancing Script', cursive; }
+        .btn-group { display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; }
+        .btn { padding: 12px 25px; border: 2px solid var(--gold); background: rgba(255, 255, 255, 0.1); color: var(--gold); font-size: 1rem; border-radius: 30px; cursor: pointer; transition: all 0.3s ease; font-family: 'Quicksand', sans-serif; font-weight: bold; }
+        .btn:hover { background: var(--gold); color: #b71c1c; transform: translateY(-3px); box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3); }
+        #envelope-container { position: relative; display: none; opacity: 0; transition: opacity 1s ease; transform: scale(1); }
+        .envelope-wrapper { position: relative; width: 320px; height: 220px; background-color: var(--envelope-shadow); border-radius: 5px; box-shadow: 0 20px 30px rgba(0,0,0,0.5); cursor: pointer; }
+        .flap { position: absolute; top: 0; left: 0; width: 0; height: 0; border-left: 160px solid transparent; border-right: 160px solid transparent; border-top: 120px solid var(--envelope-color); transform-origin: top; transition: transform 0.6s ease-in-out, z-index 0.6s; z-index: 4; }
+        .pocket { position: absolute; bottom: 0; left: 0; width: 0; height: 0; border-left: 160px solid var(--envelope-shadow); border-right: 160px solid var(--envelope-shadow); border-bottom: 110px solid var(--envelope-color); border-radius: 0 0 5px 5px; z-index: 3; pointer-events: none; }
+        .letter { position: absolute; top: 10px; left: 15px; width: 290px; height: 200px; background-color: var(--letter-color); border-radius: 5px; z-index: 2; transition: transform 0.8s ease-in-out; transition-delay: 0.2s; padding: 10px 15px; box-sizing: border-box; box-shadow: 0 2px 5px rgba(0,0,0,0.1); text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: space-between; }
+        .letter h2 { margin: 0 0 5px 0; font-family: 'Dancing Script', cursive; color: var(--text-color); font-size: 1.4rem; flex-shrink: 0; }
+        .text-area {
+    flex-grow: 1;
+    width: 100%;
+    overflow-y: auto;
+    margin-bottom: 5px;
+    scrollbar-width: none; /* Firefox için scrollbar gizleme */
+    
+    /* YENİ EKLENEN KISIMLAR: */
+    display: block; /* Esnek kutuyu kapattık, düz blok yaptık */
+    text-align: left; /* Yazıyı sola yasladık */
+    padding-right: 5px; /* Kaydırma çubuğu için minik boşluk */
+}
+        .text-area::-webkit-scrollbar { display: none; }
+        .letter p { font-family: 'Dancing Script', cursive; font-size: 1.1rem; color: #333; line-height: 1.2; margin: 0; padding: 0 2px; }
+        .change-btn { background: #b71c1c; color: white; border: none; padding: 6px 12px; border-radius: 20px; font-family: 'Quicksand', sans-serif; font-size: 0.8rem; cursor: pointer; transition: background 0.3s; opacity: 0; pointer-events: none; display: flex; align-items: center; gap: 5px; flex-shrink: 0; display: none; }
+        .change-btn:hover { background: #d32f2f; transform: scale(1.05); }
+        .seal { position: absolute; bottom: 90px; left: 50%; transform: translateX(-50%); width: 45px; height: 45px; background: radial-gradient(circle at 30% 30%, #ffd700, #b8860b); border-radius: 50%; z-index: 5; box-shadow: 2px 2px 5px rgba(0,0,0,0.3); display: flex; justify-content: center; align-items: center; font-size: 24px; color: #8e0000; transition: opacity 0.4s; pointer-events: none; }
+        .hint { position: absolute; bottom: -50px; width: 100%; text-align: center; color: rgba(255,255,255,0.7); animation: bounce 2s infinite; font-size: 0.9rem; }
+        #envelope-container.open .flap { transform: rotateX(180deg); z-index: 1; }
+        #envelope-container.open .letter { transform: translateY(-120px); z-index: 6; }
+        #envelope-container.open .seal, #envelope-container.open .hint { opacity: 0; }
+        #envelope-container.open .change-btn { opacity: 1; pointer-events: auto; transition-delay: 1s; }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+        @media (max-width: 350px) { #envelope-container { transform: scale(0.8); } }
+    </style>
+</head>
+<body>
+
+    <audio id="bg-music" src="birsen.mp3" loop></audio>
+
+    <div id="selection-screen">
+        <h1 class="title">❤️ Onur'dan Gökçe'ye... 
+            <img src="gokce.jpg" alt="özel ikon" class="title-icon">
+            </h1>
+        <div class="btn-group">
+            <button class="btn" onclick="selectCategory('sevgili')">Gökçe ❤️</button>
+            <button class="btn" onclick="selectCategory('aile')">Savaşçım ❤️‍🔥​</button>
+            <button class="btn" onclick="selectCategory('arkadas')">Küçük Bir Not ✨</button>
+            <button class="btn" onclick="window.location.href='beniseviyormusun/do_you_love_me.html'">İtiraf Et...🎄</button>
+        </div>
+    </div>
+
+    <div id="envelope-container" onclick="openEnvelope()">
+        
+        <div class="envelope-wrapper">
+            <div class="flap"></div>
+            <div class="seal">❤</div>
+            <div class="pocket"></div>
+
+            <div class="letter">
+                <button class="back-btn" onclick="goBack(event)">← Geri Dön</button>
+                <h2 id="letter-title">Başlık</h2>
+                <div class="text-area">
+                    <p id="letter-body">...</p>
+                </div>
+                <button class="change-btn" onclick="changeNote(event)">
+                    Notu Değiştir ↻
+                </button>
+            </div>
+        </div>
+        <div class="hint">Zarfa dokun ve aç ✨</div>
+    </div>
+
+    <script>
+
+        // Sayfanın herhangi bir yerine tıklandığında müziği başlat
+document.addEventListener('click', function() {
+    var audio = document.getElementById('bg-music');
+    
+    // Eğer müzik çalmıyorsa başlat
+    if (audio.paused) {
+        audio.play().catch(function(error) {
+            console.log("Müzik başlatılamadı:", error);
+        });
+        audio.volume = 0.3; // Ses seviyesi (%30)
+    }
+}, { once: true }); // 'once: true' sayesinde bu kod sadece ilk tıklamada çalışır
+
+
+        function goBack(event) {
+    // Zarfın kendisine tıklanmış gibi algılanmasını engeller
+    event.stopPropagation(); 
+
+    const envelope = document.getElementById('envelope-container');
+    const selectionScreen = document.getElementById('selection-screen');
+
+    // 1. Zarf ekranını yavaşça yok et
+    envelope.style.opacity = '0';
+
+    setTimeout(() => {
+        // 2. Zarfı tamamen gizle ve animasyonu sıfırla (Kapağı kapat)
+        envelope.style.display = 'none';
+        envelope.classList.remove('open'); 
+        isEnvelopeOpen = false; // Zarf durumunu kapalı olarak güncelle
+
+        // 3. Seçim ekranını geri getir
+        selectionScreen.style.display = 'block';
+        setTimeout(() => {
+            selectionScreen.style.opacity = '1';
+        }, 50);
+    }, 500); // 0.5 saniye bekle (efekt için)
+}
+
+        function createRandomStar() {
+            const star = document.createElement('div');
+            star.classList.add('shooting-star');
+
+            const startX = Math.random() * window.innerWidth * 1.2 - (window.innerWidth * 0.1); 
+            const startY = Math.random() * (window.innerHeight * 0.4) - 50; 
+
+            star.style.left = startX + 'px';
+            star.style.top = startY + 'px';
+
+            const angleDeg = Math.random() * 50 + 10; 
+            const angleRad = angleDeg * (Math.PI / 180); 
+            const distance = window.innerWidth * (Math.random() * 0.7 + 0.8);
+            const destinationX = Math.cos(angleRad) * distance;
+            const destinationY = Math.sin(angleRad) * distance;
+
+            star.style.setProperty('--angle', angleDeg + 'deg');
+            star.style.setProperty('--dx', destinationX + 'px');
+            star.style.setProperty('--dy', destinationY + 'px');
+
+            const duration = Math.random() * 1.5 + 1;
+            star.style.animationDuration = duration + 's';
+
+            document.body.appendChild(star);
+
+            setTimeout(() => { star.remove(); }, duration * 1000);
+        }
+
+        createRandomStar();
+        setInterval(() => {
+            setTimeout(createRandomStar, Math.random() * 3000); 
+        }, 3000);
+
+
+        const data = {
+            sevgili: {
+                title: "Canım Sevgilim,",
+                notes: [
+                    "Seni ilk tanıdığım zamanları düşünüyorum da... Dışarıdan baktığımda ne kadar sert bir kabuğun var zannetmiştim. Ama seni tanıdıkça, o sert duruşun ardındaki sıcaklığı, o cana yakın kalbi fark etmem uzun sürmedi.",
+                    "Sonra araya zaman girdi, ben bir süre ortadan kayboldum ama hayat bizi yine bir araya getirdi. İyi ki de getirdi...Geri döndüğümde içimde nedenini bilemediğim, adını koyamadığım hisler filizlenmeye başladı. O hissin ne olduğunu, bir gün kendimde bile değilken sana yazdığım o şiirle anladım. Kalbim benden önce konuşmuştu; o mısralar döküldüğünde fark ettim ki sen benim için doğru kişiydin.",
+                    "Senin hayata karşı verdiğin o mücadeleye, o güçlü duruşuna hayranım. Birçok insanın kaldıramayacağı zorluklarla nasıl başa çıktığını gördükçe sana olan saygım ve sevgim katlanarak artıyor. Ama beni asıl benden alan, tüm bu zorluklara rağmen yüzünden eksik etmediğin o gülüşün ve içimi huzurla dolduran kıkırdamaların...",
+                    "Sensiz geçen her an, sanki bir zindanda mahsur kalmışım gibi hissettiriyor bana. Sen beni değiştirdin, bana o kadar iyi geldin ki... Varlığınla hayatımı güzelleştirdiğin için teşekkür ederim.",
+                    "Yeni yılda da o güzel gülüşün yüzünden hiç eksik olmasın. Birlikte, güzel, huzur dolu nice senelere... Seni çok seviyorum."
+                ]
+            },
+            aile: {
+                title: "Savaşçı Ruhlum,",
+                notes: [
+                    "Bazen sana bakıyorum ve sadece güzel bir yüz değil, koca bir hayat mücadelesinin en onurlu zaferini görüyorum.",
+                    "Senin o yüzünden hiç eksik etmediğin gülümsemen var ya,",
+                    "İşte o gülümseme, sadece bir neşe belirtisi değil; hayata,",
+                    "Zorluklara ve seni kırmaya çalışan her şeye karşı kazanılmış en büyük devrim aslında.",
+                    "Biliyorum, o gülümsemenin ardında ne fırtınalar koptuğunu", 
+                    "Nelerin üstesinden tek başına geldiğini biliyorum.",
+                    "Hayat, belki de en savunmasız olduğun zamanlarda omuzlarına ağır yükler bindirdi. ",
+                    "En büyük sığınağını, o şefkat dolu kucağı, anneni çok erken kaybettin.",
+                    " O gidince dünyanın ne kadar soğuduğunu, seni ısıtması gereken insanların nasıl da buz kestiğini hissettin.",
+                    "Seni en çok yaralayanın yabancılar olmadığını da biliyorum. İnsan bazen en çok, EVİM dediklerinden,", 
+                    "Onu koşulsuz sevmesi gerekenlerden, kan bağlarından bekler şefkati. ",
+                    "Ama sen, tam da o kapıların yüzüne kapandığı, seni sarıp sarmalaması gereken kolların seni ittiği o karanlık anlarda bile kendi ışığını yaratmayı başardın. ",
+                    " Seni görmezden gelenlere, seni dışlayanlara, o kalabalık içindeki yalnızlığına inat; sen yıkılmadın. Belki geceleri yastığına gözyaşlarını akıttın ama sabah olduğunda o başını hep dik tuttun.",
+                    "Seninle gurur duyuyorum. Sadece başardıkların için değil, kalbinin o naifliğini kaybetmediğin için. O kadar dışlanmaya, o kadar haksızlığa rağmen kalbini katılaştırmadın, nefretle doldurmadın. ",
+                    " Aksine, acıdan bir zarafet, zorluktan bir güç inşa ettin. Şimdi karşımda duran bu kadın; kendi küllerinden doğmuş, kimseye eyvallahı olmayan, dimdik bir kadın",
+                    "Ama artık bilmeni istediğim tek bir şey var: O tek başınalık devri bitti.Bugüne kadar o yokuşları tek başına tırmandın, o yükleri tek başına sırtlandın. Ama artık o yüklerin bir ucu bende. ",
+                    "Bundan sonra senin o güzel kalbini üzecek, seni değersiz hissettirecek her şeyin karşısında ben duracağım. Seni anlamayanların, seni yalnız bırakanların açtığı o boşlukları sevgimle doldurmak için buradayım.",
+                    "Sırtını yaslayabileceğin bir dağ, fırtınalarda sığınabileceğin bir liman olmaya geldim. Sen bugüne kadar hep güçlü olmak zorundaydın, ama artık benim yanımda sadece kendin olabilirsin. Yorgunluğunu, hüznünü, neşeni paylaşmaya geldim.",
+                    "Senin geçmişin yaralı olabilir ama geleceğin benimle, bizimle çok güzel olacak. Seni seviyorum, hem de her şeyinle..."
+                ]
+            },
+            arkadas: {
+                title: "Eminim...,",
+                notes: [
+                    "Doğru kişisin",
+                    "Doğru kişiyim",
+                    "Doğru zamandayız",
+                    "Doğru duygulardayız",
+                    "Birbirimize sahip çıkalım",
+                    "Çünkü bir daha bu kadar doğruyu aynı anda bulacak fırsatımız olmayabilir yani en azından benim",
+                    "SEN BENDEN HİÇ GİTME"
+                ]
+            },
+            kendim: {
+                title: "Sevgili Ben,",
+                notes: [
+                    "Bu yıl çok yoruldun ama pes etmedin. Kendine haksızlık etme, harikasın!",
+                    "Yeni yılda kendine daha iyi bak, hayallerinden vazgeçme. Sen bunu hak ediyorsun.",
+                    "Geçmişi geride bırak, yeni yıl senin yılın olacak. Kendine inan.",
+                    "Küçük adımlar büyük zaferlere götürür. Yürümeye devam et.",
+                    "Aynaya bak ve gülümse. Sen çok değerlisin."
+                ]
+            }
+        };
+
+        let currentCategory = 'sevgili'; 
+        let isEnvelopeOpen = false;
+
+        function selectCategory(category) {
+
+            
+
+    currentCategory = category;
+    document.getElementById('letter-title').innerText = data[category].title;
+    
+    // ESKİ KOD: document.getElementById('letter-body').innerText = data[category].notes[0];
+    // YENİ KOD: Tüm notları <br><br> (boşluk) ile birleştirip tek metin yapıyoruz
+    document.getElementById('letter-body').innerHTML = data[category].notes.join('<br><br>');
+
+    // --- BU SATIRI EKLEYİN: Kaydırma çubuğunu en üste çeker ---
+    document.querySelector('.text-area').scrollTop = 0;
+    
+    const selectionScreen = document.getElementById('selection-screen');
+    selectionScreen.style.opacity = '0';
+    setTimeout(() => {
+        selectionScreen.style.display = 'none';
+        const envelope = document.getElementById('envelope-container');
+        envelope.style.display = 'block';
+        setTimeout(() => { envelope.style.opacity = '1'; }, 50);
+    }, 500);
+}
+
+        function openEnvelope() {
+            if (!isEnvelopeOpen) {
+                const envelope = document.getElementById('envelope-container');
+                envelope.classList.add('open');
+                isEnvelopeOpen = true;
+            }
+        }
+
+        function changeNote(event) {
+    event.stopPropagation(); 
+    const noteElement = document.getElementById('letter-body');
+    const notesArray = data[currentCategory].notes;
+    
+    // Geçiş efekti için opaklığı düşür
+    noteElement.style.opacity = 0;
+    
+    setTimeout(() => {
+        // 1. Ekranda şu an yazan notun dizideki sırasını (indeksini) bul
+        const currentText = noteElement.innerText;
+        let currentIndex = notesArray.indexOf(currentText);
+        
+        // 2. Bir sonraki sırayı hesapla
+        // (currentIndex + 1) % notesArray.length işlemi şunu yapar:
+        // Eğer son nota geldiysek (örneğin 5. not), matematiksel mod işlemi sayesinde
+        // otomatik olarak 0. nota (başa) döner.
+        let nextIndex = (currentIndex + 1) % notesArray.length;
+        
+        // 3. Yeni notu yazdır
+        noteElement.innerText = notesArray[nextIndex];
+        
+        // Opaklığı geri getir
+        noteElement.style.opacity = 1;
+    }, 300);
+}
+    </script>
+</body>
+</html>
